@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Decrypt Jeremy</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  </head>
+  <body>
+  <div id="content">
+	  <img id="img_logo" src="/images/Department_of_Justice-02.png" /><br />
+	  <div class="label">Welcome Agent,<br />please enter your secret text, we will try to decrypt it by using different codes.</div>
+		<table>
+			<tr>
+				<td align="center" colspan="2">
+					<div>
+						<form method="post" action="/" id="formDecrypt">
+							<textarea id="cryptedMsg" name="txtCrypted" ></textarea>
+							
+							<input class="shake" style="border: 0px; outline: none;" src="/images/decrypt3-01.png" type="image" value="submit" align="middle" > 
+						</form>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="td_result" align="left" valign="top">
+					<div id="blockClassic">
+						<div class="label">CESAR CLASSIC</div>
+						<div id="cesarClassic">
+						
+						</div>
+					</div>
+				</td>
+				<td class="td_result" align="right" valign="top">
+					<div id="blockNumber">
+						<div class="label">CESAR NUMBER</div>
+						<div id="cesarNumber">
+						
+						</div>
+					<div>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+
+	// Start socket.io connect
+	var socket = io.connect('http://localhost:8080');
+
+	// OnSubmit form event
+	$('#formDecrypt').submit(function () {
+		var textCrypted = $('#cryptedMsg').val();
+		// Send "start_decrypt" event
+		socket.emit('start_decrypt', textCrypted); 
+
+		return false; 
+	});
+	
+	// Catch events
+	socket.on('classic_end', function(data) {
+		$('#cesarClassic').empty();
+		$('#blockClassic').show('slow','linear');
+		$('#cesarClassic').prepend('<p>'+ data.messageClassic +'</p>');
+	})
+	
+	socket.on('number_end', function(data) {
+		$('#cesarNumber').empty();
+		$('#blockNumber').show('slow','linear');
+		$('#cesarNumber').prepend('<p>'+ data.messageNumber +'</p>');
+	})
+	
+	</script>
+
+  </body>
+</html>
